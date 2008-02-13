@@ -4,6 +4,9 @@ import os
 import threading
 import globals
 import logger
+import re
+
+import_exp = re.compile(r'(pf2.\d+)')
 
 class DataSyncThread(threading.Thread):
 	done_download_event = threading.Event() 
@@ -14,20 +17,24 @@ class DataSyncThread(threading.Thread):
 
 	def start_download (self):
 			local_tmpdir = "%s/%s" % (globals.tmpdir,self.ip)
-			rsync_command = "rsync -az %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,globals.path,local_tmpdir)
+			rsync_command = "rsync -avz %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,globals.path,local_tmpdir)
 			logger.log (rsync_command)
 
 			if (not os.path.isdir(local_tmpdir)):
-					mkdir(local_tmpdir)
+					os.mkdir(local_tmpdir)
 			
 			rp = os.popen (rsync_command)
 			newfiles = rp.readlines ()
-			# Will the previous line block? XXX
 			return newfiles
 
 	def start_import(self,newfiles):
+			local_tmpdir = "%s/%s" % (globals.tmpdir,self.ip)
 			for f in newfiles:
-					print "importing %s\n" % f
+				res = import_exp.search(f)
+				if (res != None):
+					fname = res.groups()[0]
+					import_command = "silk_import %s %s/%s"%(self.ip,local_tmpdir,fname)
+					print import_command
 
 	def run(self):
 			lst = self.start_download ()

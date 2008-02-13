@@ -5,3 +5,4 @@ wait_between_spawns = 10			# number of seconds to wait between rsync session spa
 slice_name = "princeton_planetflow"
 path = "/usr/local/fprobe"
 tmpdir = "."
+do_bw_limit = False

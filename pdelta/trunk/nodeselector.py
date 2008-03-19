@@ -6,6 +6,7 @@ import os
 import logger
 
 from sets import Set
+import getnodes
 
 green = []
 blue = []
@@ -14,17 +15,34 @@ red = []
 redset = Set(red)
 blueset = Set(blue)
 
-def reinit ():
-		# Read the green list
-		if (os.path.exists("green")):
-				try:
-						global greeniter
-						f = open("green")
-						green = f.readlines()
-						greeniter = iter(green)
+def getListFromFile(file):
+    f = open(file, 'r')
+    list = []
+    for line in f:
+        line = line.strip()
+        list += [line]
+    return list
 
-				except OSError:
-						logger.log( "green: file not found.")
+def reinit ():
+	if not os.path.exists("green"):
+		logger.l.debug("Creating 'green' file")
+		nodes = getnodes.get_node_list()
+		f = open("green", 'w')
+		for n in nodes:
+			logger.l.debug("saving: %s" % n)
+			print >>f, "%s\n" % n
+		f.close()
+
+	# Read the green list
+	if (os.path.exists("green")):
+		try:
+			global greeniter
+			logger.l.debug("loading: 'green' file")
+			green_list = getListFromFile("green")
+			greeniter = iter(green_list)
+
+		except OSError:
+			logger.log( "green: file not found.")
 
 def get_next_pending ():
 	# Check in the following order: red, blue, green
@@ -56,9 +74,14 @@ def get_next_pending ():
 			blueset = Set(blue)
 		else:
 			global greeniter
-			next = greeniter.next()
-			if (next == None):
-				greeniter=iter(green)
-			next = greeniter.next()
+			print "getting next host"
+			try:
+				next = greeniter.next()
+			except StopIteration:
+				print "got StopIteration..."
+				logger.l.debug("loading: 'green' file")
+				green_list = getListFromFile("green")
+				greeniter = iter(green_list)
+				next = greeniter.next()
 			ret = next.rstrip()
 	return ret

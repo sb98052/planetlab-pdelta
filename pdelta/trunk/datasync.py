@@ -18,7 +18,7 @@ class DataSyncThread(threading.Thread):
 	def start_download (self):
 			local_tmpdir = "%s/%s" % (globals.tmpdir,self.ip)
 			rsync_command = "rsync -avz %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,globals.path,local_tmpdir)
-			logger.log (rsync_command)
+			logger.l.info(rsync_command)
 
 			if (not os.path.isdir(local_tmpdir)):
 					os.mkdir(local_tmpdir)

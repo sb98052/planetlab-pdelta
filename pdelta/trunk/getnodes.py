@@ -2,15 +2,22 @@
 
 import socket
 import xmlrpclib
+import globals
+import logger
 
 def get_node_list ():
-		ret = []
-		s = xmlrpclib.ServerProxy('https://www.planet-lab.org/PLCAPI/')
-		nodes = s.GetNodes(dict(AuthMethod='anonymous'), {}, ['hostname'])
-		for node in nodes:
-		   try:
-			    print socket.gethostbyname(node['hostname'])
-		   except socket.gaierror:
-			   pass
+	
+	logger.l.debug("Entered get_node_list")
+	ret = []
+	s = xmlrpclib.ServerProxy(globals.plcapi)
+	nodes = s.GetNodes(dict(AuthMethod='anonymous'), {}, ['hostname'])
+	for node in nodes:
+		try:
+			ip = socket.gethostbyname(node['hostname'])
+			ret.append(ip)
+		except socket.gaierror:
+			pass
+	return ret
 
-get_node_list ()
+if __name__ == "__main__":
+	get_node_list ()

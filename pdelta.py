@@ -20,6 +20,7 @@ def bandwidth_used (s1,s2,i):
 	return mbdif/i
 
 def main ():
+		logger.l.info("Starting pdelta...")
 		# Main loop. Get a fistful of nodes and sync them. Do this repeatedly.
 		#pdb.set_trace ()
 		nodeselector.reinit ()

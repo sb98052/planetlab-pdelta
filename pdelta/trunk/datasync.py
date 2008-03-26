@@ -33,8 +33,15 @@ class DataSyncThread(threading.Thread):
 				res = import_exp.search(f)
 				if (res != None):
 					fname = res.groups()[0]
-					import_command = "silk_import %s %s/%s"%(self.ip,local_tmpdir,fname)
+					import_command = "silk_import %s %s/%s"%(self.ip,globals.tmpdir,fname)
+					cmd = """rwflowpack --input-mode=file --netflow-file=%(globaltmp)s/%(pffile)s """ + \
+			  			  """--sensor-configuration=%(globaltmp)s/data/%(ip)s/sensor.conf """ + \
+						  """--root-directory=/data/ """ + \
+			  			  """--log-directory=%(globaltmp)s/data/%(ip)s/ """ + \
+						  """--site-config-file=out.conf""" 
+					cmd = cmd % {'ip': self.ip, 'globaltmp': globals.tmpdir, 'pffile': fname}
 					print import_command
+					#os.system(cmd)
 
 	def run(self):
 			lst = self.start_download ()

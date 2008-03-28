@@ -30,7 +30,7 @@ def reinit ():
 		f = open("green", 'w')
 		for n in nodes:
 			logger.l.debug("saving: %s" % n)
-			print >>f, "%s\n" % n
+			print >>f, "%s" % n
 		f.close()
 
 	# Read the green list

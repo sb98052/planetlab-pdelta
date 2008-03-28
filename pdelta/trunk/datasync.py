@@ -38,7 +38,7 @@ class DataSyncThread(threading.Thread):
 			  			  """--sensor-configuration=%(globaltmp)s/data/%(ip)s/sensor.conf """ + \
 						  """--root-directory=/data/ """ + \
 			  			  """--log-directory=%(globaltmp)s/data/%(ip)s/ """ + \
-						  """--site-config-file=out.conf""" 
+						  """--site-config-file=silk.conf""" 
 					cmd = cmd % {'ip': self.ip, 'globaltmp': globals.tmpdir, 'pffile': fname}
 					print import_command
 					#os.system(cmd)

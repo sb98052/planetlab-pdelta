@@ -25,11 +25,19 @@ def main ():
 		#pdb.set_trace ()
 		nodeselector.reinit ()
 		concurrency = 0
+		pending_set = {}
 
 		while True:
 				global cur_bandwidth
 				cur_node = nodeselector.get_next_pending ()
-				data_sync_thread = datasync.DataSyncThread.new_thread (cur_node)
+				if cur_node not in pending_set:
+					data_sync_thread = datasync.DataSyncThread.new_thread (cur_node, pending_set)
+				else:
+					print "%s IS IN PROGRESS!!!"  % cur_node
+					time.sleep (globals.wait_between_spawns) 
+					# check that the node hasn't been taking too long.
+					# possibly kill the thread and restart it...
+					continue
 				concurrency = concurrency + 1
 				stamp1 = bw.get_cur_bytecount ()
 				time.sleep (globals.wait_between_spawns) 

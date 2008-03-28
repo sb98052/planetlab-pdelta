@@ -26,6 +26,7 @@ f.close()
 
 filelist = getListFromFile("green")
 if not os.path.exists(globals.tmpdir): os.mkdir(globals.tmpdir)
+if not os.path.exists(globals.silkdatadir): os.mkdir(globals.silkdatadir)
     
 i = 0
 sensorlist = []

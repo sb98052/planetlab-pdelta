@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
+import os
 import sys
+import globals
+import getnodes
 
 def getListFromFile(file):
     f = open(file, 'r')
@@ -15,13 +18,21 @@ def writeDataToFile(data, file):
     f.write(data)
     f.close()
 
-filelist = getListFromFile(sys.argv[1])
+nodes = getnodes.get_node_list(['hostname', 'node_id'])
+f = open("green", 'w')
+for ip,id in nodes:
+    print >>f, "%s" % ip
+f.close()
+
+filelist = getListFromFile("green")
+if not os.path.exists(globals.tmpdir): os.mkdir(globals.tmpdir)
+    
 i = 0
 sensorlist = []
-for file in filelist:
-    print "sensor %s S%s" % (i, file)
-    i = i+1
-    sensorlist.append("S%s" % file)
+sf = open('silk.conf', 'w')
+for ip,id in nodes:
+    print >>sf, "sensor %s S%s" % (id, ip )
+    sensorlist.append("S%s" % ip)
     
     data="""
 sensor-probe  S%s
@@ -31,16 +42,18 @@ sensor-probe  S%s
     external-ipblock remainder
     internal-ipblock %s
     read-from-file /dev/null
-	""" % (file, file)
-    writeDataToFile(data, "data/%s/sensor.conf" % file)
+    """ % (ip, ip)
+    path = "%s/%s" % (globals.tmpdir,ip)
+    if not os.path.exists(path): os.mkdir(path)
+    writeDataToFile(data, "%s/%s/sensor.conf" % (globals.tmpdir, ip))
 
-print "class all"
-print "    sensors", " ".join(sensorlist)
-print "end class"
+print >>sf, "class all"
+print >>sf, "    sensors", " ".join(sensorlist)
+print >>sf, "end class"
 
-print "version 1"
+print >>sf, "version 1"
 
-print """
+print >>sf, """
 class all
     type  0 in      in
     type  1 out     out
@@ -59,3 +72,4 @@ end class
 
 default-class all
 """
+sf.close()

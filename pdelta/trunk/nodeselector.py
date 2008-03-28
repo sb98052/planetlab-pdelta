@@ -74,7 +74,6 @@ def get_next_pending ():
 			blueset = Set(blue)
 		else:
 			global greeniter
-			print "getting next host"
 			try:
 				next = greeniter.next()
 			except StopIteration:

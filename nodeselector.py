@@ -15,46 +15,22 @@ red = []
 redset = Set(red)
 blueset = Set(blue)
 
-def getListFromFile(file):
-    f = open(file, 'r')
-    list = []
-    for line in f:
-        line = line.strip()
-        list += [line]
-    return list
-
 def reinit ():
-	if not os.path.exists("green"):
-		logger.l.debug("Creating 'green' file")
-		nodes = getnodes.get_node_list()
-		f = open("green", 'w')
-		for n in nodes:
-			logger.l.debug("saving: %s" % n)
-			print >>f, "%s" % n
-		f.close()
-
-	# Read the green list
-	if (os.path.exists("green")):
-		try:
-			global greeniter
-			logger.l.debug("loading: 'green' file")
-			green_list = getListFromFile("green")
-			greeniter = iter(green_list)
-
-		except OSError:
-			logger.log( "green: file not found.")
+	global greeniter
+	nodes = getnodes.file_get_node_list(['hostname', 'node_id'], 'green')
+	greeniter = iter(nodes)
 
 def get_next_pending ():
 	# Check in the following order: red, blue, green
 	if (os.path.exists("red")):
-			try:
-					f = open("red")
-					to_append = filter(lambda x: x in redset,f.readlines())   
-					red.extend(to_append)
-					f.close ()
-					posix.unlink("red")
-			except OSError:
-				a=1
+		try:
+			f = open("red")
+			to_append = filter(lambda x: x in redset,f.readlines())   
+			red.extend(to_append)
+			f.close ()
+			posix.unlink("red")
+		except OSError:
+			a=1
 	if (os.path.exists("blue")):
 		try:
 			f = open ("blue")
@@ -78,8 +54,8 @@ def get_next_pending ():
 				next = greeniter.next()
 			except StopIteration:
 				print "got StopIteration..."
-				logger.l.debug("loading: 'green' file")
-				green_list = getListFromFile("green")
+				logger.l.debug("reloading: 'green' list")
+				green_list = getnodes.file_get_node_list(['hostname', 'node_id'], 'green')
 				greeniter = iter(green_list)
 				next = greeniter.next()
 			ret = next.rstrip()

@@ -42,20 +42,12 @@ def main ():
 				stamp1 = bw.get_cur_bytecount ()
 				time.sleep (globals.wait_between_spawns) 
 				stamp2 = bw.get_cur_bytecount ()
-				if (bandwidth_used (stamp1,stamp2,globals.wait_between_spawns) >  globals.max_bandwidth and globals.do_bw_limit):
-					# We're out of bandwidth. Wait for one of the sync threads to finish downloading
+				if ((bandwidth_used (stamp1,stamp2,globals.wait_between_spawns) >  globals.max_bandwidth and globals.do_bw_limit) or concurrency > globals.max_concurrency):
+					# We're out of bandwidth
+					# or the concurrency is too high
+					# Wait for one of the sync threads to finish downloading
 					logger.log("Concurrency = %d" % concurrency)
 					datasync.DataSyncThread.done_download_event.wait ()
-
-
-
-
-				
-
-
-
-
-
 
 
 main ()

@@ -85,7 +85,10 @@ class DataSyncThread(threading.Thread):
 						  """--netflow-file=%(rawdatadir)s/%(ip)s/%(pffile)s """ + \
 			  			  """--sensor-configuration=%(rawdatadir)s/%(ip)s/sensor.conf """ + \
 						  """--root-directory=%(silkdatadir)s """ + \
-			  			  """--log-directory=%(rawdatadir)s/%(ip)s/ """ + \
+						  # Logging wastes a lot of space. 
+						  # Let's disable it till we fix this in Silk - Sapan.
+			  			  """--log-destination=none """ + \
+			  			  #"""--log-directory=%(rawdatadir)s/%(ip)s/ """ + \
 						  """--site-config-file=silk.conf""" 
 					cmd = cmd % {'ip': self.ip, 
 								 'silkdatadir' : globals.silkdatadir, 

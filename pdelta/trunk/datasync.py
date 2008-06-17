@@ -6,6 +6,7 @@ import globals
 import logger
 import re
 import random
+import time
 
 import_exp = re.compile(r'(pf2.\d+)')
 rsync_err = re.compile(r'link_stat ".*" failed: No such file or directory')
@@ -40,7 +41,7 @@ class DataSyncThread(threading.Thread):
 	def start_download (self):
 		local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
 		for remote_path in globals.paths:
-			rsync_command = "rsync -avz %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
+			rsync_command = "rsync --timeout 20 -avzu %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
 			                                              remote_path,local_tmpdir)
 			logger.l.info(rsync_command)
 
@@ -76,7 +77,6 @@ class DataSyncThread(threading.Thread):
 	def start_import(self,newfiles):
 			local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
 			files_done = []
-			print "starting import for %s" % self.ip
 			for f in newfiles:
 				res = import_exp.search(f)
 				if (res != None):
@@ -85,29 +85,54 @@ class DataSyncThread(threading.Thread):
 						  """--netflow-file=%(rawdatadir)s/%(ip)s/%(pffile)s """ + \
 			  			  """--sensor-configuration=%(rawdatadir)s/%(ip)s/sensor.conf """ + \
 						  """--root-directory=%(silkdatadir)s """ + \
-						  # Logging wastes a lot of space. 
-						  # Let's disable it till we fix this in Silk - Sapan.
 			  			  """--log-destination=none """ + \
-			  			  #"""--log-directory=%(rawdatadir)s/%(ip)s/ """ + \
 						  """--site-config-file=silk.conf""" 
 					cmd = cmd % {'ip': self.ip, 
 								 'silkdatadir' : globals.silkdatadir, 
 								 'rawdatadir': globals.rawdatadir, 
 								 'pffile': fname,
 								 'silkpath' : globals.silkpath}
-					print cmd
 					os.system(cmd)
 					files_done.append(fname)
-			print "ending   import for %s %s" % (self.ip,files_done)
+			return files_done			
 
+	
+
+	def fool_rsync(self, newfiles):
+			local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)		
+			
+			for f in newfiles:
+				res = import_exp.search(f)
+				if (res != None):
+					fname = res.groups()[0]
+					filename = "%s/%s" % (local_tmpdir, fname)
+					mtime=os.stat(filename).st_mtime
+					FILE = open(filename,"w")
+					FILE.truncate(0)
+					FILE.close()
+					# Change?? What change?
+					os.utime(filename, (mtime+60,mtime+60))
+
+					
+			
+	def time_stamp(self):
+			local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
+			ts_file = "%s/%s" % (local_tmpdir,"timestamp")
+			FILE = open(ts_file,"w")
+			FILE.write("%f" % time.time())
+			FILE.close()
+			
+		
 	def run(self):
 			r = random.randint(1,10000)
-			print "%s STARTING %s" % (self.ip, r)
 			lst = self.start_download ()
+			files_done = self.start_import (lst)
+			self.fool_rsync (files_done)
+			self.time_stamp ()
+			print "Done with %s [%s]" % (self.ip,lst)
 			DataSyncThread.done_download_event.set()
 			DataSyncThread.done_download_event.clear()
-			self.start_import (lst)
-			print "%s ENDING   %s" % (self.ip, r)
+			globals.concurrency = globals.concurrency - 1
 			del self.pending_set[self.ip]
 
 		

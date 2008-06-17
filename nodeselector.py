@@ -22,6 +22,9 @@ def reinit ():
 
 def get_next_pending ():
 	# Check in the following order: red, blue, green
+	global redset
+	global blueset
+
 	if (os.path.exists("red")):
 		try:
 			f = open("red")

@@ -8,7 +8,7 @@ import traceback
 import logging as l
 
 LOG_FILE = '/var/log/pdelta'
-LOG_FILE = '/proc/self/fd/1'
+
 l.basicConfig(level=l.DEBUG,
                     format='%(asctime)s %(name)-8s : %(message)s',
                     filename=LOG_FILE,

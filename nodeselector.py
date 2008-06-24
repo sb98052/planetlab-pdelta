@@ -4,6 +4,9 @@
 
 import os
 import logger
+import accounting
+import globals
+import time
 
 from sets import Set
 import getnodes
@@ -56,8 +59,18 @@ def get_next_pending ():
 			try:
 				next = greeniter.next()
 			except StopIteration:
-				print "got StopIteration..."
+				print "<Finished cycle>"
+				accounting.log_node_count(globals.node_count)
+				globals.node_count = 0
 				logger.l.debug("reloading: 'green' list")
+
+				duration = time.time() - globals.start_time
+				if (duration < 3600):
+					margin = 3600 - duration
+					print "Finished the last run in %f seconds. Sleeping for %f seconds"%(duration,margin)
+					time.sleep(margin)
+				globals.start_time = time.time()
+		
 				green_list = getnodes.file_get_node_list(['hostname', 'node_id'], 'green')
 				greeniter = iter(green_list)
 				next = greeniter.next()

@@ -58,7 +58,6 @@ def file_get_node_list(filter=['hostname'], file='green'):
 	return nodes
 
 def raw_get_node_list (filt=['hostname']):
-	
 	logger.l.debug("Entered get_node_list")
 	ret = []
 	s = xmlrpclib.ServerProxy(globals.plcapi, allow_none=True)

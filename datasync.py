@@ -7,6 +7,7 @@ import logger
 import re
 import random
 import time
+import pdb
 
 import_exp = re.compile(r'(pf2.\d+)')
 rsync_err = re.compile(r'link_stat ".*" failed: No such file or directory')
@@ -92,6 +93,8 @@ class DataSyncThread(threading.Thread):
 								 'rawdatadir': globals.rawdatadir, 
 								 'pffile': fname,
 								 'silkpath' : globals.silkpath}
+					
+					#pdb.set_trace ()
 					os.system(cmd)
 					files_done.append(fname)
 			return files_done			
@@ -126,9 +129,14 @@ class DataSyncThread(threading.Thread):
 	def run(self):
 			r = random.randint(1,10000)
 			lst = self.start_download ()
+			if (len(lst) > 0):
+				globals.node_count = globals.node_count + 1
+
 			files_done = self.start_import (lst)
+			globals.concurrency = globals.concurrency - 1
 			self.fool_rsync (files_done)
 			self.time_stamp ()
+			
 			print "Done with %s [%s]" % (self.ip,lst)
 			DataSyncThread.done_download_event.set()
 			DataSyncThread.done_download_event.clear()

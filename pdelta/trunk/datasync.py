@@ -42,7 +42,7 @@ class DataSyncThread(threading.Thread):
 	def start_download (self):
 		local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
 		for remote_path in globals.paths:
-			rsync_command = "rsync --timeout 20 -avzu %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
+			rsync_command = "rsync --timeout 15 -avzu %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
 			                                              remote_path,local_tmpdir)
 			logger.l.info(rsync_command)
 
@@ -58,7 +58,12 @@ class DataSyncThread(threading.Thread):
 			if rsync_error_in_output(newfiles, self.ip) or files == []:
 				continue
 			else:
-				return files
+				if (len(files) > 0):
+					if (globals.debug_mask.search(remote_path) != None):
+						globals.node_count_deb = globals.node_count_deb + 1
+					else:
+						globals.node_count_prod = globals.node_count_prod + 1
+					return files
 
 		logger.l.info("All globals.paths failed on host %s" % self.ip)
 		return []
@@ -129,8 +134,6 @@ class DataSyncThread(threading.Thread):
 	def run(self):
 			r = random.randint(1,10000)
 			lst = self.start_download ()
-			if (len(lst) > 0):
-				globals.node_count = globals.node_count + 1
 
 			files_done = self.start_import (lst)
 			globals.concurrency = globals.concurrency - 1
@@ -140,7 +143,6 @@ class DataSyncThread(threading.Thread):
 			print "Done with %s [%s]" % (self.ip,lst)
 			DataSyncThread.done_download_event.set()
 			DataSyncThread.done_download_event.clear()
-			globals.concurrency = globals.concurrency - 1
 			del self.pending_set[self.ip]
 
 		

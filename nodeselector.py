@@ -56,23 +56,36 @@ def get_next_pending ():
 			blueset = Set(blue)
 		else:
 			global greeniter
+
+			newiteration = 0
 			try:
 				next = greeniter.next()
 			except StopIteration:
-				print "<Finished cycle>"
-				accounting.log_node_count(globals.node_count)
-				globals.node_count = 0
+				newiteration = 1
+
+			if (newiteration):
+				while (globals.concurrency > globals.max_concurrency):
+					print("Waiting for lingering processes to complete..")
+					print("Concurrency=%d"%(globals.concurrency))
+					sleep(60)
+
+				accounting.log_node_count(globals.node_count_prod,globals.node_count_deb)
+				globals.node_count_deb = 0
+				globals.node_count_prod = 0
 				logger.l.debug("reloading: 'green' list")
 
 				duration = time.time() - globals.start_time
 				if (duration < 3600):
 					margin = 3600 - duration
-					print "Finished the last run in %f seconds. Sleeping for %f seconds"%(duration,margin)
-					time.sleep(margin)
-				globals.start_time = time.time()
+					print("Finished the last run in %f seconds. Sleeping for %f seconds"%(duration,margin+300))
+					time.sleep(3600)
+					print("Waking up...")
+					print("Concurrency=%d"%(globals.concurrency))
+					globals.start_time = time.time()
 		
 				green_list = getnodes.file_get_node_list(['hostname', 'node_id'], 'green')
 				greeniter = iter(green_list)
 				next = greeniter.next()
+
 			ret = next.rstrip()
 	return ret

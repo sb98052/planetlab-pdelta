@@ -30,10 +30,10 @@ def main ():
 		while True:
 				global cur_bandwidth
 				conctracker = 0
-				cur_node = nodeselector.get_next_pending ()
+				(cur_prefix,cur_node) = nodeselector.get_next_pending ()
 
 				if cur_node not in pending_set:
-					data_sync_thread = datasync.DataSyncThread.new_thread (cur_node, pending_set)
+					data_sync_thread = datasync.DataSyncThread.new_thread (cur_node, pending_set, cur_prefix)
 				else:
 					time.sleep (globals.wait_between_spawns) 
 					# check that the node hasn't been taking too long.

@@ -9,7 +9,6 @@ do_bw_limit = False
 max_bandwidth = 10                                        # in megaoctects/second. b/w cap on PFC
 max_concurrency = 13                                       # in megaoctects/second. b/w cap on PFC
 wait_between_spawns = 10                        # number of seconds to wait between rsync session spawns.
-slice_name = plprefix+"_netflow"
 concurrency = 0
 starttime = 0.0
 

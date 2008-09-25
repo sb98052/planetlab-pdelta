@@ -29,8 +29,6 @@ def file_get_node_list(filter=['hostname'], file='green'):
 
 	try:
 		allnodes = raw_get_node_list(filter)
-		# drop the prefix for create_silkconf
-		nodes = [n[1] for n in allnodes]
 		# Call this only once, because it overwrites the previous version of the conffile-->
 		create_silkconf.create_silkconf(nodes)
 		logger.l.debug("Creating '%s' file", file)
@@ -48,7 +46,6 @@ def file_get_node_list(filter=['hostname'], file='green'):
 		if (os.path.exists(file)):
 			try:
 				allnodes = getListFromFile(file)
-				nodes = [n[1] for n in allnodes]
 				# Create silkconf anyway		
 				create_silkconf.create_silkconf(nodes)
 			except OSError:

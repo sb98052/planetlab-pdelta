@@ -14,13 +14,14 @@ def getListFromFile(file):
     list = []
     for line in f:
         line = line.strip()
-        list += [line]
+		fields = line.split()
+        list += [(fields[0],fields[1])]
     return list
 
 def setFileFromList(list,file):
 	f = open(file, 'w')
 	for n in list:
-		print >>f, "%s" % n
+		print >>f, "%s %s" % n[0],n[1]
 	f.close()
 
 def file_get_node_list(filter=['hostname'], file='green'):
@@ -28,12 +29,10 @@ def file_get_node_list(filter=['hostname'], file='green'):
 
 	try:
 		allnodes = raw_get_node_list(filter)
-		for (pref, lst) in allnodes:
-				nodes.extend(lst)
-					
-		if 'node_id' in filter:
-			create_silkconf.create_silkconf(nodes)
-			nodes = [ n[0] for n in nodes ]
+		# drop the prefix for create_silkconf
+		nodes = [n[1] for n in allnodes]
+		# Call this only once, because it overwrites the previous version of the conffile-->
+		create_silkconf.create_silkconf(nodes)
 		logger.l.debug("Creating '%s' file", file)
 		setFileFromList(nodes, file)
 	except OSError:
@@ -42,19 +41,22 @@ def file_get_node_list(filter=['hostname'], file='green'):
 		sys.exit(1)
 	except:
 		import traceback
-		print traceback.prine_exc()
+		print traceback.print_exc()
 			
 		# api error, or other.
 		# Read the node list
 		if (os.path.exists(file)):
 			try:
-				nodes = getListFromFile(file)
+				allnodes = getListFromFile(file)
+				nodes = [n[1] for n in allnodes]
+				# Create silkconf anyway		
+				create_silkconf.create_silkconf(nodes)
 			except OSError:
 				logger.log("%s: file not found." % file)
 				logger.log("Cannot continue without node list.")
 				sys.exit(1)
-
-	return nodes
+	
+	return allnodes
 
 def raw_get_node_list (filt=['hostname']):
 	logger.l.debug("Entered get_node_list")
@@ -97,14 +99,11 @@ def raw_get_node_list (filt=['hostname']):
 			for node in nodes:
 				try:
 					ip = socket.gethostbyname(node['hostname'])
-					if 'node_id' in filt:
-						ret.append((ip,node['node_id']))
-					else:
-						ret.append(ip)
+					ret.append((plprefix,ip))
 				except socket.gaierror:
+					logger.l.debug("Socket error: could not look up %s"%node['hostname'])	
 					pass
-			allnodes.append((plprefix,ret))
-	return allnodes
+	return ret
 
 if __name__ == "__main__":
 	file_get_node_list (['hostname'], 'green')

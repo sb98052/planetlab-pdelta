@@ -12,9 +12,9 @@ from sets import Set
 def getListFromFile(file):
     f = open(file, 'r')
     list = []
-    for line in f:
-        line = line.strip()
-		fields = line.split()
+   	for line in f:
+		line = line.strip()
+        fields = line.split()
         list += [(fields[0],fields[1])]
     return list
 

@@ -27,14 +27,14 @@ def setFileFromList(list,file):
 def file_get_node_list(filter=['hostname'], file='green'):
 	allnodes = []
 
-	try:
-		allnodes = raw_get_node_list(filter)
+    try:
+        allnodes = raw_get_node_list(filter)
         # Drop the prefix for create_silkconf
         nodes = [n[0] for n in allnodes]
-		# Call this only once, because it overwrites the previous version of the conffile-->
-		create_silkconf.create_silkconf(nodes)
-		logger.l.debug("Creating '%s' file", file)
-		setFileFromList(nodes, file)
+        # Call this only once, because it overwrites the previous version of the conffile-->
+        create_silkconf.create_silkconf(nodes)
+        logger.l.debug("Creating '%s' file", file)
+        setFileFromList(nodes, file)
 	except OSError:
 		logger.log("%s: could not write to file." % file)
 		logger.log("Should not continue without backup node list.")

@@ -25,7 +25,7 @@ def setFileFromList(list,file):
 	f.close()
 
 def file_get_node_list(filter=['hostname'], file='green'):
-	allnodes = []
+    allnodes = []
 
     try:
         allnodes = raw_get_node_list(filter)
@@ -35,29 +35,29 @@ def file_get_node_list(filter=['hostname'], file='green'):
         create_silkconf.create_silkconf(nodes)
         logger.l.debug("Creating '%s' file", file)
         setFileFromList(nodes, file)
-	except OSError:
-		logger.log("%s: could not write to file." % file)
-		logger.log("Should not continue without backup node list.")
-		sys.exit(1)
-	except:
-		import traceback
-		print traceback.print_exc()
-			
-		# api error, or other.
-		# Read the node list
-		if (os.path.exists(file)):
-			try:
-				allnodes = getListFromFile(file)
+    except OSError:
+        logger.log("%s: could not write to file." % file)
+        logger.log("Should not continue without backup node list.")
+        sys.exit(1)
+    except:
+        import traceback
+        print traceback.print_exc()
+
+        # api error, or other.
+        # Read the node list
+        if (os.path.exists(file)):
+            try:
+                allnodes = getListFromFile(file)
                 # Drop the prefix for create_silkconf
                 nodes = [n[0] for n in allnodes]
-				# Create silkconf anyway		
-				create_silkconf.create_silkconf(nodes)
-			except OSError:
-				logger.log("%s: file not found." % file)
-				logger.log("Cannot continue without node list.")
-				sys.exit(1)
-	
-	return allnodes
+                # Create silkconf anyway		
+                create_silkconf.create_silkconf(nodes)
+            except OSError:
+                logger.log("%s: file not found." % file)
+                logger.log("Cannot continue without node list.")
+                sys.exit(1)
+
+    return allnodes
 
 def raw_get_node_list (filt=['hostname']):
 	logger.l.debug("Entered get_node_list")

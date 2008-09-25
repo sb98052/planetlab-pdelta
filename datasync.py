@@ -33,16 +33,17 @@ def files_todo(newfiles):
 class DataSyncThread(threading.Thread):
 	done_download_event = threading.Event() 
 
-	def __init__(self,node, pending_set):
+	def __init__(self,node, pending_set, prefix):
 		threading.Thread.__init__(self)
 		self.ip = node
 		self.pending_set = pending_set
+		self.slice_name = prefix + "_netflow"
 		pending_set[node] = True
 
 	def start_download (self):
 		local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
 		for remote_path in globals.paths:
-			rsync_command = "rsync --timeout 30 -avzu %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
+			rsync_command = "rsync --timeout 30 -avzu %s@%s:%s/pf* %s"%(slice_name,self.ip,
 			                                              remote_path,local_tmpdir)
 			logger.l.info(rsync_command)
 

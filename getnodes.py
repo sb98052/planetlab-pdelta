@@ -62,7 +62,7 @@ def raw_get_node_list (filt=['hostname']):
 	allnodes = []
 
 	for (plcapi,plprefix) in globals.plcaccess:
-			s = xmlrpclib.ServerProxy(globals.plcapi, allow_none=True)
+			s = xmlrpclib.ServerProxy(plcapi, allow_none=True)
 			auth = dict(AuthMethod='anonymous')
 
 			if globals.nodegroup:

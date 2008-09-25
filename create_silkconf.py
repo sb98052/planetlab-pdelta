@@ -18,11 +18,13 @@ def create_silkconf(nodes):
 		
 	i = 0
 	sensorlist = []
+	curips = {}
 	sf = open('silk.conf.tmp', 'w')
 	for ip,id in nodes:
-		print >>sf, "sensor %s S%s" % (id, ip )
-		sensorlist.append("S%s" % ip)
-		
+		if (not curips.ContainsKey(ip)):
+			print >>sf, "sensor %s S%s" % (id, ip )
+			sensorlist.append("S%s" % ip)
+			curips[ip]=True
 		data="""
 	sensor-probe  S%s
 		probe-name netflow                # optional but recommended

@@ -10,13 +10,13 @@ import os
 from sets import Set
 
 def getListFromFile(file):
-	f = open(file, 'r')
-	list = []
+    f = open(file, 'r')
+    list = []
     for line in f:
-		line = line.strip()
+        line = line.strip()
         fields = line.split()
         list += [(fields[0],fields[1])]
-	return list
+    return list
 
 def setFileFromList(list,file):
 	f = open(file, 'w')
@@ -25,7 +25,7 @@ def setFileFromList(list,file):
 	f.close()
 
 def file_get_node_list(filter=['hostname'], file='green'):
-	nodes = []
+	allnodes = []
 
 	try:
 		allnodes = raw_get_node_list(filter)

@@ -42,7 +42,7 @@ class DataSyncThread(threading.Thread):
 	def start_download (self):
 		local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
 		for remote_path in globals.paths:
-			rsync_command = "rsync --timeout 15 -avzu %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
+			rsync_command = "rsync --timeout 30 -avzu %s@%s:%s/pf* %s"%(globals.slice_name,self.ip,
 			                                              remote_path,local_tmpdir)
 			logger.l.info(rsync_command)
 

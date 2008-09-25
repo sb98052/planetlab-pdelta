@@ -87,5 +87,5 @@ def get_next_pending ():
 				greeniter = iter(green_list)
 				next = greeniter.next()
 
-			ret = next.rstrip()
+			ret = (next[0],next[1].rstrip())
 	return ret

@@ -21,7 +21,7 @@ def create_silkconf(nodes):
 	curips = {}
 	sf = open('silk.conf.tmp', 'w')
 	for ip,id in nodes:
-		if (not curips.ContainsKey(ip)):
+		if (not curips.containsKey(ip)):
 			print >>sf, "sensor %s S%s" % (id, ip )
 			sensorlist.append("S%s" % ip)
 			curips[ip]=True

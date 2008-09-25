@@ -23,16 +23,14 @@ def setFileFromList(list,file):
 		print >>f, "%s" % n
 	f.close()
 
-# TODO TODO TODO: 
-#	  Make the call to create_silkconf only on the nodes that are NEW.
-#	  This should be do-able with set operations.  Maintain a current or previous
-#	  set, then with the new set find the differences.  Pass only the diffs to
-#	  create_silkconf rather than all of them.
 def file_get_node_list(filter=['hostname'], file='green'):
 	nodes = []
 
 	try:
-		nodes = raw_get_node_list(filter)
+		allnodes = raw_get_node_list(filter)
+		for (pref, lst) in allnodes:
+				nodes.extend(lst)
+					
 		if 'node_id' in filter:
 			create_silkconf.create_silkconf(nodes)
 			nodes = [ n[0] for n in nodes ]
@@ -44,7 +42,8 @@ def file_get_node_list(filter=['hostname'], file='green'):
 		sys.exit(1)
 	except:
 		import traceback
-		print traceback.print_exc()
+		print traceback.prine_exc()
+			
 		# api error, or other.
 		# Read the node list
 		if (os.path.exists(file)):
@@ -60,47 +59,52 @@ def file_get_node_list(filter=['hostname'], file='green'):
 def raw_get_node_list (filt=['hostname']):
 	logger.l.debug("Entered get_node_list")
 	ret = []
-	s = xmlrpclib.ServerProxy(globals.plcapi, allow_none=True)
-	auth = dict(AuthMethod='anonymous')
 
-	if globals.nodegroup:
-		logger.l.debug("Collecting nodes in nodegroup %s" % globals.nodegroup)
-		ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup})
-		nodes = s.GetNodes(auth, ng[0]['node_ids'])
+	allnodes = []
 
-	elif globals.nodegroup_exclude:
-		logger.l.debug("Collecting all nodes except in nodegroup %s" % globals.nodegroup_exclude)
+	for (plcapi,plprefix) in globals.plcaccess:
+			s = xmlrpclib.ServerProxy(globals.plcapi, allow_none=True)
+			auth = dict(AuthMethod='anonymous')
 
-		# Get nodegroup nodes
-		ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup_exclude})
-		ng_nodes = s.GetNodes(auth, ng[0]['node_ids'])
+			if globals.nodegroup:
+				logger.l.debug("Collecting nodes in nodegroup %s" % globals.nodegroup)
+				ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup})
+				nodes = s.GetNodes(auth, ng[0]['node_ids'])
 
-		# Get all nodes
-		all_nodes = s.GetNodes(auth, {'peer_id': None}, filt)
-		
-		# remove ngnodes from all node list
-		ng_list = [ x['hostname'] for x in ng_nodes ]
-		all_list = [ x['hostname'] for x in all_nodes ]
-		not_ng_nodes = Set(all_list) - Set(ng_list)
+			elif globals.nodegroup_exclude:
+				logger.l.debug("Collecting all nodes except in nodegroup %s" % globals.nodegroup_exclude)
 
-		# keep each node that *is* in the not_ng_nodes set
-		nodes = filter(lambda x : x['hostname'] in not_ng_nodes, all_nodes)
+				# Get nodegroup nodes
+				ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup_exclude})
+				ng_nodes = s.GetNodes(auth, ng[0]['node_ids'])
 
-	else:
-		logger.l.debug("Collecting all nodes")
-		nodes = s.GetNodes(auth, {'peer_id': None}, filt)
-		
+				# Get all nodes
+				all_nodes = s.GetNodes(auth, {'peer_id': None}, filt)
+				
+				# remove ngnodes from all node list
+				ng_list = [ x['hostname'] for x in ng_nodes ]
+				all_list = [ x['hostname'] for x in all_nodes ]
+				not_ng_nodes = Set(all_list) - Set(ng_list)
 
-	for node in nodes:
-		try:
-			ip = socket.gethostbyname(node['hostname'])
-			if 'node_id' in filt:
-				ret.append((ip,node['node_id']))
+				# keep each node that *is* in the not_ng_nodes set
+				nodes = filter(lambda x : x['hostname'] in not_ng_nodes, all_nodes)
+
 			else:
-				ret.append(ip)
-		except socket.gaierror:
-			pass
-	return ret
+				logger.l.debug("Collecting all nodes")
+				nodes = s.GetNodes(auth, {'peer_id': None}, filt)
+				
+
+			for node in nodes:
+				try:
+					ip = socket.gethostbyname(node['hostname'])
+					if 'node_id' in filt:
+						ret.append((ip,node['node_id']))
+					else:
+						ret.append(ip)
+				except socket.gaierror:
+					pass
+			allnodes.append((plprefix,ret))
+	return allnodes
 
 if __name__ == "__main__":
 	file_get_node_list (['hostname'], 'green')

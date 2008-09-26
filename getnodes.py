@@ -15,13 +15,13 @@ def getListFromFile(file):
     for line in f:
         line = line.strip()
         fields = line.split()
-        list += [(fields[0],fields[1])]
+        list += [(fields[0],fields[1],0)]
     return list
 
 def setFileFromList(list,file):
 	f = open(file, 'w')
 	for n in list:
-		print >>f, "%s %s" % n[0],n[1]
+		print >>f, "%s %s" % (n[0],n[1])
 	f.close()
 
 def file_get_node_list(filter=['hostname'], file='green'):
@@ -30,11 +30,11 @@ def file_get_node_list(filter=['hostname'], file='green'):
     try:
         allnodes = raw_get_node_list(filter)
         # Drop the prefix for create_silkconf
-        nodes = [n[0] for n in allnodes]
+        nodes = [(n[1],n[2]) for n in allnodes]
         # Call this only once, because it overwrites the previous version of the conffile-->
         create_silkconf.create_silkconf(nodes)
         logger.l.debug("Creating '%s' file", file)
-        setFileFromList(nodes, file)
+        setFileFromList(allnodes, file)
     except OSError:
         logger.log("%s: could not write to file." % file)
         logger.log("Should not continue without backup node list.")
@@ -49,7 +49,7 @@ def file_get_node_list(filter=['hostname'], file='green'):
             try:
                 allnodes = getListFromFile(file)
                 # Drop the prefix for create_silkconf
-                nodes = [n[0] for n in allnodes]
+                nodes = [(n[1],n[2]) for n in allnodes]
                 # Create silkconf anyway		
                 create_silkconf.create_silkconf(nodes)
             except OSError:
@@ -65,6 +65,7 @@ def raw_get_node_list (filt=['hostname']):
 
 	allnodes = []
 
+	base_node_id=0
 	for (plcapi,plprefix) in globals.plcaccess:
 			s = xmlrpclib.ServerProxy(plcapi, allow_none=True)
 			auth = dict(AuthMethod='anonymous')
@@ -100,10 +101,11 @@ def raw_get_node_list (filt=['hostname']):
 			for node in nodes:
 				try:
 					ip = socket.gethostbyname(node['hostname'])
-					ret.append((plprefix,ip))
+					ret.append((plprefix,ip,base_node_id+node['node_id']))
 				except socket.gaierror:
 					logger.l.debug("Socket error: could not look up %s"%node['hostname'])	
 					pass
+			base_node_id=base_node_id+len(ret)
 	return ret
 
 if __name__ == "__main__":

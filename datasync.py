@@ -43,7 +43,7 @@ class DataSyncThread(threading.Thread):
 	def start_download (self):
 		local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
 		for remote_path in globals.paths:
-			rsync_command = "rsync --timeout 30 -avzu %s@%s:%s/pf* %s"%(slice_name,self.ip,
+			rsync_command = "rsync --timeout 30 -avzu %s@%s:%s/pf* %s"%(self.slice_name,self.ip,
 			                                              remote_path,local_tmpdir)
 			logger.l.info(rsync_command)
 
@@ -147,8 +147,8 @@ class DataSyncThread(threading.Thread):
 			del self.pending_set[self.ip]
 
 		
-	def new_thread(ip, pending_set):
-		sc = DataSyncThread(ip, pending_set)
+	def new_thread(ip, pending_set,prefix):
+		sc = DataSyncThread(ip, pending_set,prefix)
 		sc.start()
 
 	new_thread = staticmethod(new_thread)

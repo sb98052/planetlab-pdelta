@@ -5,7 +5,7 @@ import sys
 import MySQLdb
 
 def format(slicename):
-	return ("<a href=\"mailto:%s@slices.planet-lab.org?cc=support@planet-lab.org\">%s</a>" % (slicename,slicename))
+	return (slicename)
 
 if __name__ == "__main__":
 	sliceid=int(sys.argv[1])
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 	elif ( not row ):
 		plcapi = "https://boot.planet-lab.org/PLCAPI/"
 		s = xmlrpclib.ServerProxy(plcapi, allow_none=True)
-		auth = dict(AuthMethod='password',Username='',AuthString='')
+		auth = dict(AuthMethod='password',Username='sapanb@cs.princeton.edu',AuthString='')
 		
 		slices=s.GetSlices(auth,{'slice_id':sliceid})
 		if (len(slices)>0):

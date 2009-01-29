@@ -66,9 +66,8 @@ def raw_get_node_list (filt=['hostname']):
 	allnodes = []
 
 	base_node_id=0
-	for (plcapi,plprefix) in globals.plcaccess:
+	for (plcapi,plprefix,auth) in globals.plcaccess:
 			s = xmlrpclib.ServerProxy(plcapi, allow_none=True)
-			auth = dict(AuthMethod='anonymous')
 
 			if globals.nodegroup:
 				logger.l.debug("Collecting nodes in nodegroup %s" % globals.nodegroup)

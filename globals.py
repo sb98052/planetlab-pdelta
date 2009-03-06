@@ -26,4 +26,4 @@ rawdatadir = "/usr/local/cdelta-production-4.0/data_raw"
 
 # You may set one, the other, or neither.  But, not both.
 nodegroup_exclude = None
-nodegroup = None
+nodegroup = 'chopstix'

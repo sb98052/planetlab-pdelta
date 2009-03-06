@@ -14,15 +14,15 @@ starttime = 0.0
 
 node_count_prod = 0
 node_count_deb = 0
-accountdir="/usr/local/pdelta-production-4.0/accounting"
-paths = [ "/pf","/tmp/mnt/sysimg/var/local/fprobe" ]
+accountdir="/usr/local/cdelta-production-4.0/accounting"
+paths = ["/var/local/chopstix","/tmp/mnt/sysimg/vservers/princeton_chopstix/var/local/chopstix" ]
 debug_mask = re.compile(r'^/tmp/mnt/sysimg')
 
 
 plcaccess = [("https://boot.planet-lab.org/PLCAPI/","pl",dict(AuthMethod='password',Username='sapanb@cs.princeton.edu',AuthString='')),("https://boot.planet-lab.eu/PLCAPI/","ple",dict(AuthMethod='anonymous'))]
-silkpath = "/usr/local/pdelta-production-4.0/local/"
-rawdatadir = "/usr/local/pdelta-production-4.0/data_raw"
-silkdatadir= "/usr/local/pdelta-production-4.0/data_import"
+#silkpath = "/usr/local/pdelta-production-4.0/local/"
+rawdatadir = "/usr/local/cdelta-production-4.0/data_raw"
+#silkdatadir= "/usr/local/pdelta-production-4.0/data_import"
 
 # You may set one, the other, or neither.  But, not both.
 nodegroup_exclude = None

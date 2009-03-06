@@ -9,7 +9,7 @@ import random
 import time
 import pdb
 
-import_exp = re.compile(r'(pf2.\d+)')
+import_exp = re.compile(r'(\d+)')
 rsync_err = re.compile(r'link_stat ".*" failed: No such file or directory')
 def rsync_error_in_output(newfiles, host):
 	for f in newfiles:
@@ -136,9 +136,11 @@ class DataSyncThread(threading.Thread):
 			r = random.randint(1,10000)
 			lst = self.start_download ()
 
-			files_done = self.start_import (lst)
-			globals.concurrency = globals.concurrency - 1
-			self.fool_rsync (files_done)
+            # Don't need to import anything here 
+
+			#files_done = self.start_import (lst)
+			#globals.concurrency = globals.concurrency - 1
+			#self.fool_rsync (files_done)
 			self.time_stamp ()
 			
 			print "Done with %s [%s]" % (self.ip,lst)

@@ -100,7 +100,7 @@ def raw_get_node_list (filt=['hostname']):
 			for node in nodes:
 				try:
 					ip = socket.gethostbyname(node['hostname'])
-                    base_node_id++;
+                    base_node_id++
 					ret.append((plprefix,ip,base_node_id))
 				except socket.gaierror:
 					logger.l.debug("Socket error: could not look up %s"%node['hostname'])	

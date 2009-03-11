@@ -100,11 +100,12 @@ def raw_get_node_list (filt=['hostname']):
 			for node in nodes:
 				try:
 					ip = socket.gethostbyname(node['hostname'])
-					ret.append((plprefix,ip,base_node_id+node['node_id']))
+                    base_node_id++;
+					ret.append((plprefix,ip,base_node_id))
 				except socket.gaierror:
 					logger.l.debug("Socket error: could not look up %s"%node['hostname'])	
 					pass
-			base_node_id=base_node_id+len(ret)
+			#base_node_id=base_node_id+len(ret)
 	return ret
 
 if __name__ == "__main__":

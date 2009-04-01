@@ -12,10 +12,12 @@ from sets import Set
 def getListFromFile(file):
     f = open(file, 'r')
     list = []
+    i=0
     for line in f:
         line = line.strip()
         fields = line.split()
-        list += [(fields[0],fields[1],0)]
+        i = i + 1
+        list += [(fields[0],fields[1],i)]
     return list
 
 def setFileFromList(list,file):
@@ -100,7 +102,7 @@ def raw_get_node_list (filt=['hostname']):
 			for node in nodes:
 				try:
 					ip = socket.gethostbyname(node['hostname'])
-                    base_node_id = base_node_id + 1
+                    base_node_id = base_node_id+1
                     ret.append((plprefix,ip,base_node_id))
 				except socket.gaierror:
 					logger.l.debug("Socket error: could not look up %s"%node['hostname'])	

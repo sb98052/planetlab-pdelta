@@ -70,7 +70,7 @@ def raw_get_node_list (filt=['hostname']):
             if globals.nodegroup:
                 logger.l.debug("Collecting nodes in nodegroup %s" % globals.nodegroup)
                 ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup})
-                pdb.set_trace()
+                #pdb.set_trace()
                 nodes = s.GetNodes(auth, ng[0]['node_ids'])
 
             elif globals.nodegroup_exclude:

@@ -2,7 +2,7 @@
 
 import re
 
-plprefix='pl'
+plprefix='princeton'
 # plprefix='ple'
 
 do_bw_limit = False
@@ -15,7 +15,7 @@ starttime = 0.0
 node_count_prod = 0
 node_count_deb = 0
 accountdir="/usr/local/cdelta-production-4.0/accounting"
-paths = ["/var/local/chopstix","/tmp/mnt/sysimg/vservers/princeton_chopstix/var/local/chopstix" ]
+paths = ["/home/sapan/princeton_chopstix","/tmp/mnt/sysimg/vservers/princeton_chopstix/home/princeton_sapan/chopstix" ]
 debug_mask = re.compile(r'^/tmp/mnt/sysimg')
 
 

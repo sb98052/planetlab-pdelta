@@ -21,7 +21,7 @@ debug_mask = re.compile(r'^/tmp/mnt/sysimg')
 
 plcaccess = [("https://boot.planet-lab.org/PLCAPI/","pl",dict(AuthMethod='password',Username='sapanb@cs.princeton.edu',AuthString='')),("https://boot.planet-lab.eu/PLCAPI/","ple",dict(AuthMethod='anonymous'))]
 #silkpath = "/usr/local/pdelta-production-4.0/local/"
-rawdatadir = "/usr/local/cdelta-production-4.0/data_raw"
+rawdatadir = "/d/data/chopstix"
 #silkdatadir= "/usr/local/pdelta-production-4.0/data_import"
 
 # You may set one, the other, or neither.  But, not both.

@@ -74,10 +74,10 @@ def get_next_pending ():
 				logger.l.debug("reloading: 'green' list")
 
 				duration = time.time() - globals.start_time
-				if (duration < 3600):
-					margin = 3600 - duration
+				if (duration < globals.period):
+					margin = globals.period - duration
 					print("Finished the last run in %f seconds. Sleeping for %f seconds"%(duration,margin+300))
-					time.sleep(3600)
+					time.sleep(globals.period)
 					print("Waking up...")
 					print("Concurrency=%d"%(globals.concurrency))
 					globals.start_time = time.time()

@@ -10,12 +10,13 @@ max_bandwidth = 10                                        # in megaoctects/secon
 max_concurrency = 13                                       # in megaoctects/second. b/w cap on PFC
 wait_between_spawns = 10                        # number of seconds to wait between rsync session spawns.
 concurrency = 0
+period=300
 starttime = 0.0
 
 node_count_prod = 0
 node_count_deb = 0
 accountdir="/usr/local/cdelta-production-4.0/accounting"
-paths = ["/home/princeton_sapan/","/tmp/mnt/sysimg/vservers/princeton_chopstix/home/princeton_sapan/chopstix" ]
+paths = ["/home/princeton_sapan/chopstix","/tmp/mnt/sysimg/vservers/princeton_chopstix/home/princeton_sapan/chopstix" ]
 debug_mask = re.compile(r'^/tmp/mnt/sysimg')
 
 

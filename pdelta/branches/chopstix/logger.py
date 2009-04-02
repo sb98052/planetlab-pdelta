@@ -7,7 +7,7 @@ import time
 import traceback
 import logging as l
 
-LOG_FILE = '/var/log/pdelta'
+LOG_FILE = '/var/log/cdelta'
 
 l.basicConfig(level=l.DEBUG,
                     format='%(asctime)s %(name)-8s : %(message)s',

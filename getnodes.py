@@ -4,7 +4,6 @@ import socket
 import xmlrpclib
 import globals
 import logger
-import create_silkconf
 import os
 import pdb
 
@@ -33,7 +32,6 @@ def file_get_node_list(filter=['hostname'], file='green'):
         # Drop the prefix for create_silkconf
         nodes = [(n[1],n[2]) for n in allnodes]
         # Call this only once, because it overwrites the previous version of the conffile-->
-        create_silkconf.create_silkconf(nodes)
         logger.l.debug("Creating '%s' file", file)
         setFileFromList(allnodes, file)
     except OSError:
@@ -52,7 +50,6 @@ def file_get_node_list(filter=['hostname'], file='green'):
                 # Drop the prefix for create_silkconf
                 nodes = [(n[1],n[2]) for n in allnodes]
                 # Create silkconf anyway        
-                create_silkconf.create_silkconf(nodes)
             except OSError:
                 logger.log("%s: file not found." % file)
                 logger.log("Cannot continue without node list.")

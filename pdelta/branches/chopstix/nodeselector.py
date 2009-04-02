@@ -68,7 +68,7 @@ def get_next_pending ():
 					print("Concurrency=%d"%(globals.concurrency))
 					sleep(60)
 
-				accounting.log_node_count(globals.node_count_prod,globals.node_count_deb)
+				#accounting.log_node_count(globals.node_count_prod,globals.node_count_deb)
 				globals.node_count_deb = 0
 				globals.node_count_prod = 0
 				logger.l.debug("reloading: 'green' list")

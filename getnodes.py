@@ -69,7 +69,7 @@ def raw_get_node_list (filt=['hostname']):
 
             if globals.nodegroup:
                 logger.l.debug("Collecting nodes in nodegroup %s" % globals.nodegroup)
-                ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup})
+                ng = s.GetNodeGroups(auth, {'groupname' : globals.nodegroup})
                 #pdb.set_trace()
                 nodes = s.GetNodes(auth, ng[0]['node_ids'])
 
@@ -77,7 +77,7 @@ def raw_get_node_list (filt=['hostname']):
                 logger.l.debug("Collecting all nodes except in nodegroup %s" % globals.nodegroup_exclude)
 
                 # Get nodegroup nodes
-                ng = s.GetNodeGroups(auth, {'name' : globals.nodegroup_exclude})
+                ng = s.GetNodeGroups(auth, {'groupname' : globals.nodegroup_exclude})
                 ng_nodes = s.GetNodes(auth, ng[0]['node_ids'])
 
                 # Get all nodes

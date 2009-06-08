@@ -106,9 +106,11 @@ class DataSyncThread(threading.Thread):
             #pdb.set_trace ()
             local_tmpdir = "%s/%s/chopstix" % (globals.rawdatadir,self.ip)
             files_done = []
+            timestamps = {}
             for f in newfiles:
                 ts = int(f)
-                if (ts>1000000):
+                if (ts>1000000 and not timestamps.has_key(ts)):
+                    timestamps[ts]=True;
                     lo = ts%1000;
                     med = (ts/1000)%1000;
                     hi = (ts/1000000)%1000;
@@ -124,10 +126,13 @@ class DataSyncThread(threading.Thread):
                     cmd = "cp -lR %s/* %s"%(ts_path,dir_path)
                     print cmd
                     os.system(cmd)
+
                     cmd = "rm -fR %s"%(ts_path)
                     print cmd
                     os.system(cmd)
+
                     files_done.append(dir_path)
+
             return files_done           
 
     

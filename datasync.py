@@ -127,7 +127,7 @@ class DataSyncThread(threading.Thread):
                     cmd = "rm -fR %s"%(ts_path)
                     print cmd
                     os.system(cmd)
-                    files_done.append(fname)
+                    files_done.append(dir_path)
             return files_done           
 
     

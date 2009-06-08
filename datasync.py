@@ -103,26 +103,31 @@ class DataSyncThread(threading.Thread):
             return files_done           
     
     def flat_to_heirarchical(self,newfiles):
+            pdb.set_trace ()
             local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
             files_done = []
             for f in newfiles:
                 ts = int(f)
-                lo = ts%1000;
-                med = (ts/1000)%1000;
-                hi = (ts/1000000)%1000;
+                if (ts>1000000):
+                    lo = ts%1000;
+                    med = (ts/1000)%1000;
+                    hi = (ts/1000000)%1000;
 
-                ts_path="%s/%s"%(local_tmpdir,f)
-                subdir_path="%03d/%03d/%03d"%(hi,med,lo)
-                dir_path="%s/%s"%(local_tmpdir,subdir_path)
+                    ts_path="%s/%s"%(local_tmpdir,f)
+                    subdir_path="%03d/%03d/%03d"%(hi,med,lo)
+                    dir_path="%s/%s"%(local_tmpdir,subdir_path)
 
-                cmd = "mkdir -p %s"%dir_path
-                print cmd
-                os.system(cmd)
+                    cmd = "mkdir -p %s"%dir_path
+                    print cmd
+                    os.system(cmd)
 
-                cmd = "cp %s/* %s"%(ts_path,dir_path)
-                print cmd
-                os.system(cmd)
-                files_done.append(fname)
+                    cmd = "cp -lR %s/* %s"%(ts_path,dir_path)
+                    print cmd
+                    os.system(cmd)
+                    cmd = "rm -fR %s"%(ts_path)
+                    print cmd
+                    os.system(cmd)
+                    files_done.append(fname)
             return files_done           
 
     
@@ -156,10 +161,8 @@ class DataSyncThread(threading.Thread):
             r = random.randint(1,10000)
             lst = self.start_download ()
 
-            # Don't need to import anything here 
-
             globals.concurrency = globals.concurrency - 1
-            files_done = self.flat_to_heirarchical (files_done)
+            files_done = self.flat_to_heirarchical (lst)
             self.time_stamp ()
             
             print "Done with %s [%s]" % (self.ip,files_done)

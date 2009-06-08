@@ -103,7 +103,7 @@ class DataSyncThread(threading.Thread):
             return files_done           
     
     def flat_to_heirarchical(self,newfiles):
-            pdb.set_trace ()
+            #pdb.set_trace ()
             local_tmpdir = "%s/%s" % (globals.rawdatadir,self.ip)
             files_done = []
             for f in newfiles:
@@ -115,7 +115,7 @@ class DataSyncThread(threading.Thread):
 
                     ts_path="%s/%s"%(local_tmpdir,f)
                     subdir_path="%03d/%03d/%03d"%(hi,med,lo)
-                    dir_path="%s/%s"%(local_tmpdir,subdir_path)
+                    dir_path="%s/chopstix/%s"%(local_tmpdir,subdir_path)
 
                     cmd = "mkdir -p %s"%dir_path
                     print cmd

@@ -4,7 +4,7 @@ $rawdir="/usr/local/pdelta-production-4.0/data_raw";
 $importdir="/usr/local/pdelta-production-4.0/data_import";
 $silkdir="/usr/local/pdelta-production-4.0/local/sbin";
 
-system("find $rawdir -name \"pf*\" -size +0 -mtime -2 > /tmp/to_harvest");
+system("find $rawdir -name \"pf*\" -size +0 -mtime -4 > /tmp/to_harvest");
 
 open FIL,"/tmp/to_harvest";
 

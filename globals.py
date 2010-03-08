@@ -16,7 +16,7 @@ node_count_prod = 0
 node_count_deb = 0
 accountdir="/usr/local/pdelta-production-4.0/accounting"
 paths = [ "/pf","/tmp/mnt/sysimg/var/local/fprobe","/var/local/fprobe" ]
-path_hook = { "/pf":"if [ ! -e /etc/init.d/pf2slice ]; then wget www.cs.princeton.edu/~sapanb/pf2slice;sudo mv pf2slice /etc/init.d;sudo chmod +x /etc/init.d/pf2slice;sudo /sbin/chkconfig --add pf2slice;sudo /sbin/service pf2slice start; fi" }
+path_hook = { "/pf":"if [ ! -e /etc/init.d/pf2slice ]; then wget www.cs.princeton.edu/~sapanb/pf2slice;sudo mkdir -p /pf;sudo mv pf2slice /etc/init.d;sudo chmod +x /etc/init.d/pf2slice;sudo /sbin/chkconfig --add pf2slice;sudo /sbin/service pf2slice start; fi" }
 debug_mask = re.compile(r'^/tmp/mnt/sysimg')
 
 

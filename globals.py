@@ -2,7 +2,6 @@
 
 import re
 
-
 # PFC-specific variables
 # If you are bringing up your own PFC, then you should only
 # need to configure the variables below
